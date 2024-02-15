@@ -1,0 +1,22 @@
+flavors:
+  development:
+    ide: "idea"
+    app:
+      name: "TR Store"
+
+    android:
+      applicationId: "com.dev.trstore"
+      icon: "assets/images/logo.png"
+    ios:
+      bundleId: "com.dev.trstore"
+      icon: "assets/images/logo.png"
+  production:
+    app:
+      name: "TR Store"
+
+    android:
+      applicationId: "com.voidk.trstore"
+      icon: "assets/images/logo.png"
+    ios:
+      bundleId: "com.voidk.trstore"
+      icon: "assets/images/logo.png"
