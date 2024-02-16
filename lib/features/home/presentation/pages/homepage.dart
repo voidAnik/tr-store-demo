@@ -1,70 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:tr_store_demo/core/constants/app_colors.dart';
+import 'package:tr_store_demo/core/extensions/padding_extension.dart';
+import 'package:tr_store_demo/core/extensions/theme_extension.dart';
 
 class HomePage extends StatefulWidget {
-  static const path = '/home';
-
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isLoading = true; // Initially, data is loading
-
-  @override
-  void initState() {
-    super.initState();
-    // Simulate a network request or data loading delay
-    Future.delayed(const Duration(seconds: 2), () {
-      // After the delay, set loading to false
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar(context),
-      body: _isLoading ? _loadingBar(context) : _products(context),
+      appBar: _appBar(),
+      body: const Placeholder(),
     );
   }
 
-  AppBar _appBar(BuildContext context) => AppBar(
+  AppBar _appBar() => AppBar(
+        backgroundColor: AppColors.primaryColor,
+        automaticallyImplyLeading: false,
         centerTitle: false,
-        title: const Text('Discover'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ActionChip(
-              label: const Text('\$ Total Money'),
-              avatar: const Icon(Icons.shopping_bag),
-              onPressed: () {
-                // Placeholder for action
-              },
-            ),
-          ),
-        ],
-      );
-
-  Center _loadingBar(BuildContext context) => const Center(
-        child: CircularProgressIndicator(),
-      );
-
-  Widget _products(BuildContext context) => GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemCount: 10, // Placeholder for dynamic item count
-        itemBuilder: (context, index) => Card(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Icon(Icons.shopping_bag),
-              Text('Item $index'),
-            ],
+        title: Text(
+          'Discover',
+          style: context.textTheme.titleMedium!.copyWith(
+            color: AppColors.secondaryVariant,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [_totalMoney(context)],
       );
+
+  Padding _totalMoney(BuildContext context) {
+    String totalMoney = '\$ 10}';
+    return Padding(
+      padding: context.horizontalPaddingNormal,
+      child: ActionChip(
+        backgroundColor: AppColors.secondaryColor,
+        // Total money text
+        label: Text(totalMoney),
+        // Shop icon
+        avatar: Icon(
+          Icons.shopping_bag,
+          color: AppColors.primaryColor,
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
 }

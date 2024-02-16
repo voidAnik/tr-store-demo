@@ -1,3 +1,5 @@
+import 'package:tr_store_demo/core/constants/api_url.dart';
+
 enum Flavor {
   development,
   production,
@@ -15,8 +17,21 @@ class F {
       case Flavor.production:
         return 'TR Store';
       default:
-        return 'title';
+        // setting app name if no flavor is selected for now
+        return 'TR Store';
     }
   }
 
+  static String get basUrl {
+    switch (appFlavor) {
+      case Flavor.development:
+        return ApiUrl.baseUrlDev;
+      case Flavor.production:
+        return ApiUrl.baseUrlProd;
+
+      default:
+        // setting dev base url if no flavor is selected for now
+        return ApiUrl.baseUrlDev;
+    }
+  }
 }
