@@ -5,7 +5,7 @@ import 'package:tr_store_demo/app/flavors.dart';
 class ApiClient {
   late final Dio dio;
 
-  ApiClient.init() {
+  ApiClient() {
     dio = Dio(
       BaseOptions(
         baseUrl: F.basUrl,

@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:tr_store_demo/core/constants/app_colors.dart';
 import 'package:tr_store_demo/core/extensions/padding_extension.dart';
 import 'package:tr_store_demo/core/extensions/theme_extension.dart';
+import 'package:tr_store_demo/core/injection/injection_container.dart';
+import 'package:tr_store_demo/features/home/domain/repositories/home_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,7 +50,9 @@ class _HomePageState extends State<HomePage> {
           Icons.shopping_bag,
           color: AppColors.primaryColor,
         ),
-        onPressed: () {},
+        onPressed: () async {
+          log('Fetched Data: ${await getIt<HomeRepository>().getProducts()}');
+        },
       ),
     );
   }

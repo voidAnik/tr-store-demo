@@ -18,10 +18,8 @@ void main() {
     mockHomeRepository = MockHomeRepository();
     useCase = GetProducts(mockHomeRepository);
   });
-  const tProductList = [
-    Product(id: 1, price: 1, title: 'test', description: 'test desc'),
-    Product(id: 2, price: 2, title: 'test', description: 'test desc')
-  ];
+
+  const tProductList = [Product(), Product()];
   test(
     'should get product list from the repository',
     () async {
