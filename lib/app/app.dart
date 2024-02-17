@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tr_store_demo/config/theme/app_theme.dart';
 import 'package:tr_store_demo/features/home/presentation/pages/homepage.dart';
 
 import 'flavors.dart';
@@ -11,9 +12,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: F.title,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme.lightTheme,
       home: _flavorBanner(
         child: const HomePage(),
         show: kDebugMode,
