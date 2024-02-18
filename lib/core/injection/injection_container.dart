@@ -5,11 +5,14 @@ import 'package:tr_store_demo/core/database/cart_provider.dart';
 import 'package:tr_store_demo/core/database/database_manager.dart';
 import 'package:tr_store_demo/core/database/product_provider.dart';
 import 'package:tr_store_demo/core/network/api_client.dart';
-import 'package:tr_store_demo/features/home/data/data_sources/home_local_data_source.dart';
-import 'package:tr_store_demo/features/home/data/data_sources/home_remote_data_source.dart';
-import 'package:tr_store_demo/features/home/data/repositories/home_repository_impl.dart';
-import 'package:tr_store_demo/features/home/domain/repositories/home_repository.dart';
-import 'package:tr_store_demo/features/home/domain/use_cases/get_products.dart';
+import 'package:tr_store_demo/features/product_home/data/data_sources/product_local_data_source.dart';
+import 'package:tr_store_demo/features/product_home/data/data_sources/product_remote_data_source.dart';
+import 'package:tr_store_demo/features/product_home/data/repositories/product_repository_impl.dart';
+import 'package:tr_store_demo/features/product_home/domain/repositories/product_repository.dart';
+import 'package:tr_store_demo/features/product_home/domain/use_cases/get_products.dart';
+import 'package:tr_store_demo/features/product_home/presentation/blocs/products_cubit.dart';
+import 'package:tr_store_demo/features/product_home/presentation/blocs/quantity_cubit.dart';
+import 'package:tr_store_demo/features/product_home/presentation/blocs/total_money_cubit.dart';
 
 import '../utils/network_info.dart';
 
@@ -17,13 +20,14 @@ final getIt = GetIt.instance;
 
 Future<void> init() async {
   // * Bloc
-
+  getIt.registerFactory(() => ProductsCubit(getProducts: getIt()));
+  getIt.registerFactory(() => QuantityCubit());
+  getIt.registerLazySingleton(() => TotalMoneyCubit());
   // * Use Cases
   getIt.registerLazySingleton(() => GetProducts(getIt()));
-  //..registerLazySingleton(() => GetRandomNumberTrivia(getIt()));
 
   // * Repository
-  getIt.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(
+  getIt.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(
         localDataSource: getIt(),
         remoteDataSource: getIt(),
         networkInfo: getIt(),
@@ -31,10 +35,10 @@ Future<void> init() async {
 
   // * Data Sources
   getIt
-    ..registerLazySingleton<HomeLocalDataSource>(
-        () => HomeLocalDataSourceImpl(dbClient: getIt()))
-    ..registerLazySingleton<HomeRemoteDataSource>(
-        () => HomeRemoteDataSourceImpl(
+    ..registerLazySingleton<ProductLocalDataSource>(
+        () => ProductLocalDataSourceImpl(dbClient: getIt()))
+    ..registerLazySingleton<ProductRemoteDataSource>(
+        () => ProductRemoteDataSourceImpl(
               client: getIt(),
             ));
 

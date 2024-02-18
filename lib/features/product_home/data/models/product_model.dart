@@ -1,4 +1,4 @@
-import 'package:tr_store_demo/features/home/domain/entities/product.dart';
+import 'package:tr_store_demo/features/product_home/domain/entities/product.dart';
 
 class ProductModel extends Product {
   const ProductModel({

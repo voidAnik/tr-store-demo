@@ -39,6 +39,8 @@ dependencies:
   animate_do: ^3.3.3
   # for shimmer effect
   shimmer: ^3.0.0
+  # for route management
+  go_router: ^13.2.0
 
 
 dev_dependencies:

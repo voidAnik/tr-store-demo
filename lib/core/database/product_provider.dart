@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';
-import 'package:tr_store_demo/features/home/data/models/product_model.dart';
+import 'package:tr_store_demo/features/product_home/data/models/product_model.dart';
 
 const tableName = 'product';
 const columnId = 'id';
