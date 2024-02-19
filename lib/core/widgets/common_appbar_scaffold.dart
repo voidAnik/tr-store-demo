@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tr_store_demo/core/constants/app_colors.dart';
 import 'package:tr_store_demo/core/extensions/padding_extension.dart';
 import 'package:tr_store_demo/core/extensions/theme_extension.dart';
-import 'package:tr_store_demo/features/product_home/presentation/blocs/total_money_cubit.dart';
+import 'package:tr_store_demo/features/cart/presentation/blocs/cart_total_cubit.dart';
+import 'package:tr_store_demo/features/cart/presentation/pages/cart_page.dart';
 
 class CommonAppBar extends AppBar {
   CommonAppBar(
       {super.key,
       required String title,
       required BuildContext context,
+      required bool showActions,
       required bool canBack})
       : super(
           backgroundColor: AppColors.primaryColor,
@@ -31,7 +34,7 @@ class CommonAppBar extends AppBar {
               fontWeight: FontWeight.bold,
             ),
           ),
-          actions: [_totalMoney(context)],
+          actions: [if (showActions) _totalMoney(context)],
         );
 
   static Padding _totalMoney(BuildContext context) {
@@ -39,10 +42,12 @@ class CommonAppBar extends AppBar {
       padding: context.horizontalPaddingNormal,
       child: ActionChip(
         backgroundColor: Colors.white,
-        // Total money text
-        label: BlocBuilder<TotalMoneyCubit, int>(
-          builder: (context, state) {
-            return Text('\$ $state');
+        label: BlocBuilder<CartTotalCubit, int>(
+          builder: (context, price) {
+            if (price == 0) {
+              context.read<CartTotalCubit>().loadTotalPrice();
+            }
+            return Text('\$ $price');
           },
         ),
         // Shop icon
@@ -50,7 +55,9 @@ class CommonAppBar extends AppBar {
           Icons.shopping_bag,
           color: AppColors.primaryColor,
         ),
-        onPressed: () async {},
+        onPressed: () async {
+          context.push(CartPage.path);
+        },
       ),
     );
   }

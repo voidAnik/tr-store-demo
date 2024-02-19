@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tr_store_demo/features/cart/presentation/pages/cart_page.dart';
 import 'package:tr_store_demo/features/product_home/domain/entities/product.dart';
 import 'package:tr_store_demo/features/product_home/presentation/pages/homepage.dart';
 import 'package:tr_store_demo/features/product_home/presentation/pages/product_details_page.dart';
@@ -9,8 +10,6 @@ import 'package:tr_store_demo/features/product_home/presentation/pages/product_d
 import '../../app/flavors.dart';
 
 class RouterManager {
-  // Global level or within a suitable class
-  ValueNotifier<String> appBarTitleNotifier = ValueNotifier("Discover");
   static final config = GoRouter(
       observers: [
         CustomNavigatorObserver(),
@@ -27,6 +26,11 @@ class RouterManager {
           path: ProductDetailsPage.path,
           builder: (context, GoRouterState state) =>
               ProductDetailsPage(product: state.extra as Product),
+        ),
+        GoRoute(
+          name: CartPage.name,
+          path: CartPage.path,
+          builder: (context, GoRouterState state) => const CartPage(),
         ),
       ]);
 

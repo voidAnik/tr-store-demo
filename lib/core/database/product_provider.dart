@@ -4,15 +4,15 @@ import 'package:sqflite/sqflite.dart';
 import 'package:tr_store_demo/features/product_home/data/models/product_model.dart';
 
 const tableName = 'product';
-const columnId = 'id';
-const columnTitle = 'title';
-const columnContent = 'content';
-const columnImage = 'image';
-const columnThumbnail = 'thumbnail';
-const columnCategory = 'category';
-const columnPublishedAt = 'publishedAt';
-const columnUpdatedAt = 'updatedAt';
-const columnUserId = 'userId';
+const productColumnId = 'id';
+const productColumnTitle = 'title';
+const productColumnContent = 'content';
+const productColumnImage = 'image';
+const productColumnThumbnail = 'thumbnail';
+const productColumnCategory = 'category';
+const productColumnPublishedAt = 'publishedAt';
+const productColumnUpdatedAt = 'updatedAt';
+const productColumnUserId = 'userId';
 
 class ProductProvider {
   final Database _db;
@@ -24,15 +24,15 @@ class ProductProvider {
   FutureOr<void> _createTable() async {
     await _db.execute('''
           CREATE TABLE IF NOT EXISTS $tableName (
-            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-            $columnTitle TEXT,
-            $columnContent TEXT,
-            $columnImage TEXT,
-            $columnThumbnail TEXT,
-            $columnCategory TEXT,
-            $columnPublishedAt TEXT,
-            $columnUpdatedAt TEXT,
-            $columnUserId INTEGER
+            $productColumnId INTEGER PRIMARY KEY AUTOINCREMENT,
+            $productColumnTitle TEXT,
+            $productColumnContent TEXT,
+            $productColumnImage TEXT,
+            $productColumnThumbnail TEXT,
+            $productColumnCategory TEXT,
+            $productColumnPublishedAt TEXT,
+            $productColumnUpdatedAt TEXT,
+            $productColumnUserId INTEGER
           );
         ''');
   }
@@ -60,17 +60,17 @@ class ProductProvider {
     final List<Map<String, dynamic>> maps = await _db.query(
       tableName,
       columns: [
-        columnId,
-        columnTitle,
-        columnContent,
-        columnImage,
-        columnThumbnail,
-        columnCategory,
-        columnPublishedAt,
-        columnUpdatedAt,
-        columnUserId
+        productColumnId,
+        productColumnTitle,
+        productColumnContent,
+        productColumnImage,
+        productColumnThumbnail,
+        productColumnCategory,
+        productColumnPublishedAt,
+        productColumnUpdatedAt,
+        productColumnUserId
       ],
-      where: '$columnId = ?',
+      where: '$productColumnId = ?',
       whereArgs: [id],
     );
     if (maps.isNotEmpty) {
@@ -80,12 +80,13 @@ class ProductProvider {
   }
 
   Future<int> delete(int id) async {
-    return await _db.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
+    return await _db
+        .delete(tableName, where: '$productColumnId = ?', whereArgs: [id]);
   }
 
   Future<int> update(ProductModel product) async {
     return await _db.update(tableName, product.toJson(),
-        where: '$columnId = ?', whereArgs: [product.id]);
+        where: '$productColumnId = ?', whereArgs: [product.id]);
   }
 
   Future close() async => _db.close();

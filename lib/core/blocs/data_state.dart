@@ -1,22 +1,22 @@
 import 'package:equatable/equatable.dart';
 
-abstract class ApiState extends Equatable {
+abstract class DataState extends Equatable {
   final List _props;
 
-  const ApiState([this._props = const <dynamic>[]]);
+  const DataState([this._props = const <dynamic>[]]);
 
   @override
   List<Object> get props => [_props];
 }
 
-class ApiInitial extends ApiState {}
+class DataInitial extends DataState {}
 
-class ApiLoading extends ApiState {}
+class DataLoading extends DataState {}
 
-class ApiSuccess<T> extends ApiState {
+class DataLoaded<T> extends DataState {
   final T response;
 
-  const ApiSuccess({
+  const DataLoaded({
     required this.response,
   });
 
@@ -24,10 +24,10 @@ class ApiSuccess<T> extends ApiState {
   List<Object> get props => [response as Object];
 }
 
-class ApiError extends ApiState {
+class DataError extends DataState {
   final String message;
 
-  const ApiError({required this.message});
+  const DataError({required this.message});
 
   @override
   List<Object> get props => [message];

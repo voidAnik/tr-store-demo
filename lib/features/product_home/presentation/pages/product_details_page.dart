@@ -4,9 +4,9 @@ import 'package:tr_store_demo/core/constants/app_colors.dart';
 import 'package:tr_store_demo/core/extensions/padding_extension.dart';
 import 'package:tr_store_demo/core/extensions/theme_extension.dart';
 import 'package:tr_store_demo/core/injection/injection_container.dart';
+import 'package:tr_store_demo/features/cart/presentation/blocs/cart_total_cubit.dart';
 import 'package:tr_store_demo/features/product_home/domain/entities/product.dart';
 import 'package:tr_store_demo/features/product_home/presentation/blocs/quantity_cubit.dart';
-import 'package:tr_store_demo/features/product_home/presentation/blocs/total_money_cubit.dart';
 import 'package:tr_store_demo/features/product_home/presentation/widgets/icon_card.dart';
 import 'package:tr_store_demo/features/product_home/presentation/widgets/responsive_image.dart';
 
@@ -29,13 +29,15 @@ class ProductDetailsPage extends StatelessWidget {
         context: context,
         title: '',
         canBack: true,
+        showActions: true,
       ),
       body: _body(context),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           context
-              .read<TotalMoneyCubit>()
-              .addValue(quantityCubit.state * product.userId!);
+              .read<CartTotalCubit>()
+              //.addToCart(quantityCubit.state * product.userId!);
+              .addToCart(product);
         },
         isExtended: true,
         backgroundColor: AppColors.primaryColor,
