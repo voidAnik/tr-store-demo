@@ -1,7 +1,31 @@
 # TR Store
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [Resources](#resources)
+3. [Features](#features)
+4. [App Screenshots](#app-screenshots)
+5. [Technical Specifications](#technical-specifications)
+    - [Architecture](#architecture)
+    - [Development Approach](#development-approach)
+    - [Database](#database)
+    - [State Management](#state-management)
+    - [Dependency Injection](#dependency-injection)
+    - [Networking](#networking)
+    - [Routing](#routing)
+    - [Pagination](#pagination)
+    - [Flavor Configuration](#flavor-configuration)
+    - [Handling Data and Internet Connectivity](#handling-data-and-internet-connectivity)
+6. [Installation](#installation)
+7. [Running the App](#running-the-app)
+    - [With Android Studio](#with-android-studio)
+    - [From Command Line](#from-command-line)
+
 
 ## Project Overview
 TR Store is a Flutter-based lightweight mobile application designed to deliver a seamless shopping experience for users on low-end mobile devices, especially in rural areas. The app ensures user state persistence across app closures and crashes, offering a good user experience despite potential network issues.
+
+## Resources
+Dummy data for the TR Store application is sourced from https://www.jsonplaceholder.org/ . This allows for the simulation of product listings and details within the app.
 
 ## Features
 - **Product Listing**: Explore a list of products that TR Store offers.
