@@ -19,6 +19,10 @@ class CartTotalCubit extends Cubit<int> {
     emit(totalPrice);
   }
 
+  void clearValue() {
+    emit(0);
+  }
+
   void removeFromCart(int value) {
     emit(state - value);
   }

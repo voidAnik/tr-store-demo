@@ -4,6 +4,7 @@ import 'package:tr_store_demo/core/constants/app_colors.dart';
 import 'package:tr_store_demo/core/extensions/padding_extension.dart';
 import 'package:tr_store_demo/core/extensions/theme_extension.dart';
 import 'package:tr_store_demo/core/injection/injection_container.dart';
+import 'package:tr_store_demo/core/utils/messenger.dart';
 import 'package:tr_store_demo/features/cart/presentation/blocs/cart_total_cubit.dart';
 import 'package:tr_store_demo/features/product_home/domain/entities/product.dart';
 import 'package:tr_store_demo/features/product_home/presentation/blocs/quantity_cubit.dart';
@@ -33,11 +34,15 @@ class ProductDetailsPage extends StatelessWidget {
       ),
       body: _body(context),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context
-              .read<CartTotalCubit>()
-              //.addToCart(quantityCubit.state * product.userId!);
-              .addToCart(product);
+        onPressed: () async {
+          Messenger.showLoadingDialog(context);
+          for (int i = 0; i < quantityCubit.state; i++) {
+            await context.read<CartTotalCubit>().addToCart(product);
+          }
+          if (context.mounted) {
+            Messenger.stopLoadingDialog(context);
+            Messenger.showSnackBar(context, 'Successfully added to Cart');
+          }
         },
         isExtended: true,
         backgroundColor: AppColors.primaryColor,
@@ -54,31 +59,20 @@ class ProductDetailsPage extends StatelessWidget {
       padding: context.paddingNormal,
       child: ListView(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: ResponsiveImage(
-              imageUrl: product.image!,
-              aspectRatio: 1.86,
+          Hero(
+            tag: 'hero${product.id}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ResponsiveImage(
+                imageUrl: product.image!,
+                aspectRatio: 1.86,
+              ),
             ),
           ),
           const SizedBox(
             height: 16,
           ),
-          Text(
-            product.title!,
-            style: context.textTheme.titleMedium,
-            maxLines: 1,
-            overflow: TextOverflow.fade,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            product.content!,
-            style: context.textTheme.bodySmall,
-            maxLines: 10,
-            overflow: TextOverflow.ellipsis,
-          ),
+          _descriptionWidget(context),
           const SizedBox(
             height: 24,
           ),
@@ -97,43 +91,69 @@ class ProductDetailsPage extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              BlocBuilder<QuantityCubit, int>(
-                bloc: quantityCubit,
-                builder: (context, quantity) {
-                  return Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => quantityCubit.decrease(),
-                        child: IconCard(
-                            context: context,
-                            icon: Icon(
-                              Icons.remove,
-                              color: AppColors.primaryColor,
-                              size: 16,
-                            )),
-                      ),
-                      Padding(
-                        padding: context.horizontalPaddingLow,
-                        child: Text('$quantity'),
-                      ),
-                      GestureDetector(
-                        onTap: () => quantityCubit.increase(),
-                        child: IconCard(
-                            context: context,
-                            icon: Icon(
-                              Icons.add,
-                              color: AppColors.primaryColor,
-                              size: 16,
-                            )),
-                      ),
-                    ],
-                  );
-                },
-              )
+              _quantityWidget()
             ],
           )
         ],
       ),
+    );
+  }
+
+  Widget _quantityWidget() {
+    return BlocBuilder<QuantityCubit, int>(
+      bloc: quantityCubit,
+      builder: (context, quantity) {
+        return Row(
+          children: [
+            GestureDetector(
+              onTap: () => quantityCubit.decrease(),
+              child: IconCard(
+                  context: context,
+                  icon: Icon(
+                    Icons.remove,
+                    color: AppColors.primaryColor,
+                    size: 16,
+                  )),
+            ),
+            Padding(
+              padding: context.horizontalPaddingLow,
+              child: Text('$quantity'),
+            ),
+            GestureDetector(
+              onTap: () => quantityCubit.increase(),
+              child: IconCard(
+                  context: context,
+                  icon: Icon(
+                    Icons.add,
+                    color: AppColors.primaryColor,
+                    size: 16,
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _descriptionWidget(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          product.title!,
+          style: context.textTheme.titleMedium,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Text(
+          product.content!,
+          style: context.textTheme.bodySmall,
+          maxLines: 10,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

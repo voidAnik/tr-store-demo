@@ -25,7 +25,7 @@ class CartCubit extends Cubit<DataState> {
   Future<void> getCarts() async {
     final Either<Failure, List<Cart>> failureOrResponse =
         await getCartItems(NoParams());
-
+    await Future.delayed(const Duration(milliseconds: 500));
     failureOrResponse.fold((failure) {
       log(
         'get local data failure: $failure',
@@ -42,23 +42,6 @@ class CartCubit extends Cubit<DataState> {
     });
   }
 
-  /*Future<void> removeCart(Cart cart) async {
-    log('removing cart item');
-    await removeCartItem(cart.productId);
-    int index = cartList.indexWhere((c) => c.productId == cart.productId);
-    if (index != -1) {
-      if (cartList[index].quantity - 1 > 0) {
-        Cart changedItem =
-            cartList[index].copyWith(quantity: cartList[index].quantity - 1);
-        cartList[index] = changedItem;
-      } else {
-        cartList.remove(cart);
-      }
-    }
-    log('carts: $cartList');
-
-    emit(DataLoaded<List<Cart>>(response: List.from(cartList)));
-  }*/
   Future<void> removeCart(Cart cart) async {
     log('removing cart item');
     await removeCartItem(cart.productId);
@@ -83,7 +66,10 @@ class CartCubit extends Cubit<DataState> {
   Future<void> clearCartItems() async {
     log('removing cart items');
     await clearCart();
-    cartList.clear();
-    emit(DataLoaded<List<Cart>>(response: []));
+    List<Cart> newCarts = List.from(cartList);
+    newCarts.clear();
+    cartList = newCarts;
+    await Future.delayed(const Duration(seconds: 1));
+    emit(DataLoaded<List<Cart>>(response: newCarts));
   }
 }

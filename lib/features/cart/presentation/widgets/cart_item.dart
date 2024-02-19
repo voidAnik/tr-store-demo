@@ -24,6 +24,8 @@ class CartItem extends StatelessWidget {
       height: 80,
       width: MediaQuery.of(context).size.width,
       child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Row(
           children: [
             Expanded(

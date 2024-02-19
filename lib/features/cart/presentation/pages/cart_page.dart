@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +10,10 @@ import 'package:tr_store_demo/core/widgets/common_appbar_scaffold.dart';
 import 'package:tr_store_demo/features/cart/domain/entities/cart.dart';
 import 'package:tr_store_demo/features/cart/presentation/blocs/cart_cubit.dart';
 import 'package:tr_store_demo/features/cart/presentation/blocs/cart_total_cubit.dart';
+import 'package:tr_store_demo/features/cart/presentation/widgets/cart_shimmer_loading.dart';
 
 import '../widgets/cart_item.dart';
+import '../widgets/empty_cart.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -44,17 +44,15 @@ class CartPage extends StatelessWidget {
       child: BlocBuilder<CartCubit, DataState>(
         builder: (context, state) {
           if (state is DataLoading) {
-            context.read<CartCubit>().getCarts();
-            return const CircularProgressIndicator();
+            _getCarts(context);
+            return const CartShimmerLoading();
           } else if (state is DataLoaded<List<Cart>>) {
-            log('state: ${state.response}');
             if (state.response.isEmpty) {
-              return _emptyCart(context);
+              return const EmptyCart();
             } else {
               return _cartItems(context, state.response);
             }
           } else {
-            log('state: ${state.runtimeType}');
             return ErrorWidget(Exception());
           }
         },
@@ -62,36 +60,13 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  _emptyCart(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.remove_shopping_cart_rounded,
-            color: AppColors.primaryColor,
-            size: 40,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            'Empty Cart',
-            style: GoogleFonts.acme(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  Future<void> _getCarts(BuildContext context) =>
+      context.read<CartCubit>().getCarts();
 
   _cartItems(BuildContext context, List<Cart> cartItems) {
     return Column(
       children: [
         Expanded(
-          flex: 9,
           child: ListView.builder(
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
@@ -106,53 +81,63 @@ class CartPage extends StatelessWidget {
                 );
               }),
         ),
-        SizedBox(
-          height: 48,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BlocBuilder<CartTotalCubit, int>(
-                builder: (context, price) {
-                  return Text(
-                    'Total price: \$$price',
-                    style: GoogleFonts.montserrat(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
-                  );
-                },
-              ),
-              const Spacer(),
-              SizedBox(
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      Messenger.showLoadingDialog(context);
-                      context.read<CartCubit>().clearCartItems();
-                      await Future.delayed(const Duration(seconds: 1));
-                      Messenger.stopLoadingDialog(context);
-                      Messenger.showSnackBar(context, 'Ordered Successfully');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shadowColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          side: BorderSide(
-                              color: AppColors.primaryColor,
-                              width: 1,
-                              style: BorderStyle.solid)),
-                    ),
-                    child: Text(
-                      'Order Now',
-                      style:
-                          GoogleFonts.acme(color: Colors.white, fontSize: 16),
-                    ),
-                  )),
-            ],
-          ),
-        )
+        _orderNowWidget(context)
       ],
     );
+  }
+
+  SizedBox _orderNowWidget(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          BlocBuilder<CartTotalCubit, int>(
+            builder: (context, price) {
+              return Text(
+                'Total price: \$$price',
+                style: GoogleFonts.montserrat(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              );
+            },
+          ),
+          const Spacer(),
+          SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await _order(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  shadowColor: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      side: BorderSide(
+                          color: AppColors.primaryColor,
+                          width: 1,
+                          style: BorderStyle.solid)),
+                ),
+                child: Text(
+                  'Order Now',
+                  style: GoogleFonts.acme(color: Colors.white, fontSize: 16),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _order(BuildContext context) async {
+    Messenger.showLoadingDialog(context);
+    context.read<CartCubit>().clearCartItems();
+    context.read<CartTotalCubit>().clearValue();
+    await Future.delayed(const Duration(seconds: 1));
+    if (context.mounted) {
+      Messenger.stopLoadingDialog(context);
+      Messenger.showSnackBar(context, 'Ordered Successfully');
+    }
   }
 }

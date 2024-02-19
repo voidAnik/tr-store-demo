@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,7 @@ import 'package:tr_store_demo/core/constants/app_colors.dart';
 import 'package:tr_store_demo/core/extensions/padding_extension.dart';
 import 'package:tr_store_demo/core/injection/injection_container.dart';
 import 'package:tr_store_demo/core/widgets/common_appbar_scaffold.dart';
+import 'package:tr_store_demo/core/widgets/shimmer_loading.dart';
 import 'package:tr_store_demo/features/cart/presentation/blocs/cart_total_cubit.dart';
 import 'package:tr_store_demo/features/product_home/domain/entities/product.dart';
 import 'package:tr_store_demo/features/product_home/presentation/blocs/products_cubit.dart';
@@ -80,13 +83,34 @@ class HomePage extends StatelessWidget {
       builder: (context, state) {
         if (state is DataInitial) {
           context.read<ProductsCubit>().getProductList();
-          return const CircularProgressIndicator();
+          return _shimmerLoading(context);
         } else if (state is DataLoaded<List<Product>>) {
+          log('home data loaded length: ${state.response.length}');
           return _products(context, state.response);
         } else {
           return ErrorWidget(Exception());
         }
       },
+    );
+  }
+
+  _shimmerLoading(BuildContext context) {
+    return ShimmerLoading(
+      child: GridView.builder(
+        controller: _scrollController,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemCount: 10,
+        itemBuilder: (context, index) => Padding(
+          padding: context.paddingLow,
+          child: Card(
+            surfaceTintColor: Colors.black,
+            elevation: 5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+      ),
     );
   }
 }

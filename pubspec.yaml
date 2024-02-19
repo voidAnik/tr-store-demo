@@ -31,7 +31,7 @@ dependencies:
   flutter_animate: ^4.5.0
   #n for local database
   sqflite: ^2.3.2
-  path: 1.8.3
+  path: 1.8.3 # do not change it pinned
   path_provider: ^2.1.2
   # to cache network images
   cached_network_image: ^3.3.1
@@ -41,6 +41,10 @@ dependencies:
   shimmer: ^3.0.0
   # for route management
   go_router: ^13.2.0
+  # to add native splash
+  flutter_native_splash: ^2.3.11
+
+
 
 
 dev_dependencies:
@@ -69,3 +73,9 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+
+flutter_native_splash:
+  android: true
+  ios: true
+  color: "#dadbfe"
+  image: "assets/images/splash_logo.png"
